@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Audit | Automated Report Generator</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">SYSTEM AUDIT</div>
+        <div class="header-label">IT MANAGEMENT PORTAL</div>
+    </header>
+
+    <main class="container">
+
+        <div class="tag">SYSTEM REPORTING TOOL</div>
+
+        <h1>Automated System<br>Information Report</h1>
+
+        <p>
+            Generate a structured technical report containing
+            system information, memory utilization and storage details.
+        </p>
+
+        <div class="report-info">
+            <div>
+                <strong>01</strong>
+                <span>System Details</span>
+            </div>
+            <div>
+                <strong>02</strong>
+                <span>Memory Usage</span>
+            </div>
+            <div>
+                <strong>03</strong>
+                <span>Disk Usage</span>
+            </div>
+        </div>
+
+        <button onclick="generateReport()" id="generateBtn">
+            Generate System Report
+        </button>
+
+        <div id="message"></div>
+
+        <div class="footer-note">
+            Automated System Reporting Utility
+        </div>
+
+    </main>
+
+    <script>
+        async function generateReport() {
+            const message = document.getElementById("message");
+            const button = document.getElementById("generateBtn");
+
+            message.innerText = "Generating report...";
+            button.disabled = true;
+
+            try {
+                const response = await fetch("/generate", {
+                    method: "POST"
+                });
+
+                if (!response.ok) {
+                    throw new Error("Report generation failed");
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "System_Report.pdf";
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+
+                message.innerText = "Report generated and downloaded successfully!";
+
+            } catch (error) {
+                message.innerText = "Unable to generate report. Please try again.";
+            }
+
+            button.disabled = false;
+        }
+    </script>
+
+</body>
+</html>
